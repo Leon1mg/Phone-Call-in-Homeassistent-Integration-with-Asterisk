@@ -1,37 +1,37 @@
-# Asterisk als Home Assistant Add-on installieren
+# Install Asterisk as a Home Assistant Add-on
 
-Diese Anleitung beschreibt, wie du **Asterisk als Add-on in Home Assistant** installierst und konfigurierst, um per Telefon auf dein Smart Home zuzugreifen.
-
----
-
-## 🔧 **1. Voraussetzungen**
-- Ein laufender **Home Assistant (Supervisor-Modus)**
-- Ein **Mikrofon & Lautsprecher** für Sprachbefehle (falls gewünscht)
-- Eine **stabile Internetverbindung** für externe Anrufe
-- Ein **SIP-Client** auf deinem Handy (z. B. Linphone, Zoiper)
+This guide explains how to **install and configure Asterisk as an add-on in Home Assistant** to access your smart home via phone calls.
 
 ---
 
-## 🚀 **2. Installation von Asterisk Add-on**
-1. **Öffne Home Assistant** und gehe zu **Einstellungen → Add-ons**.
-2. Klicke auf **Add-on-Store** und suche nach **Asterisk**.
-3. Falls Asterisk nicht verfügbar ist:
-   - Klicke auf die drei Punkte (⋮) → "Repository hinzufügen"
-   - Füge folgendes Repository hinzu:
+## 🔧 **1. Prerequisites**
+- A running **Home Assistant (Supervisor mode)**
+- A **microphone & speaker** for voice commands (if desired)
+- A **stable internet connection** for external calls
+- A **SIP client** on your phone (e.g., Linphone, Zoiper)
+
+---
+
+## 🚀 **2. Installing the Asterisk Add-on**
+1. **Open Home Assistant** and go to **Settings → Add-ons**.
+2. Click on **Add-on Store** and search for **Asterisk**.
+3. If Asterisk is not available:
+   - Click on the three dots (⋮) → "Add repository"
+   - Add the following repository:
      ```
      https://github.com/hassio-addons/repository
      ```
-   - Danach sollte Asterisk installierbar sein.
-4. Klicke auf **Installieren** und warte, bis der Prozess abgeschlossen ist.
-5. Aktiviere **„Starten bei Boot“** und starte das Add-on.
+   - After that, Asterisk should be installable.
+4. Click **Install** and wait for the process to complete.
+5. Enable **“Start on boot”** and start the add-on.
 
 ---
 
-## ⚙️ **3. Asterisk konfigurieren über die Add-on-Einstellungen**
+## ⚙️ **3. Configuring Asterisk via Add-on Settings**
 
-1. Öffne das **Asterisk Add-on** in Home Assistant.
-2. Gehe zum Tab **„Konfiguration“**.
-3. Passe die Konfiguration an und füge einen SIP-Benutzer hinzu:
+1. Open the **Asterisk Add-on** in Home Assistant.
+2. Go to the **"Configuration"** tab.
+3. Adjust the configuration and add a SIP user:
    ```yaml
    ami_password: "UR_OWN_PASSWORD"
    auto_add: true
@@ -55,47 +55,47 @@ Diese Anleitung beschreibt, wie du **Asterisk als Add-on in Home Assistant** ins
      allow: ulaw,alaw
      users:
        - name: homeuser
-         secret: DEIN_SICHERES_PASSWORT
+         secret: YOUR_SECURE_PASSWORD
          type: friend
          host: dynamic
          context: default
    ```
-4. Speichere die Änderungen und starte das Add-on neu.
+4. Save the changes and restart the add-on.
 
 ---
 
-## 📲 **4. SIP-Client auf dem Handy einrichten**
-1. **Lade eine SIP-App** wie **Zoiper oder Linphone** herunter.
-2. **Erstelle ein neues SIP-Konto**:
-   - **Benutzername:** `homeuser`
-   - **Passwort:** `DEIN_SICHERES_PASSWORT`
-   - **Server:** `DEINE_HA_IP:5060`
-3. **Speichern und verbinden**.
-4. Teste den Anruf an **100**, um zu prüfen, ob die Verbindung funktioniert.
+## 📲 **4. Setting Up a SIP Client on Your Phone**
+1. **Download a SIP app** such as **Zoiper or Linphone**.
+2. **Create a new SIP account**:
+   - **Username:** `homeuser`
+   - **Password:** `YOUR_SECURE_PASSWORD`
+   - **Server:** `YOUR_HA_IP:5060`
+3. **Save and connect**.
+4. Test calling **100** to check if the connection works.
 
 ---
 
-## 🌍 **5. Zugriff von außerhalb einrichten**
-Wenn du von außerhalb auf Asterisk zugreifen willst, gibt es zwei Wege:
+## 🌍 **5. Enabling External Access**
+If you want to access Asterisk from outside your home network, there are two options:
 
-### 🔗 **Option 1: Portfreigabe** (Unsicher, nicht empfohlen)
-- Öffne in deinem Router **Port 5060** und leite ihn an die **Home Assistant IP** weiter.
-- Sicherheitsrisiko: Mögliches Ziel für Angriffe.
+### 🔗 **Option 1: Port Forwarding** (Not Recommended, Security Risk)
+- Open **port 5060** in your router and forward it to your **Home Assistant IP**.
+- Security risk: Potential target for attacks.
 
-### 🔒 **Option 2: VPN (Empfohlen)**
-- Nutze ein **VPN (z. B. WireGuard oder Tailscale)**, um sicher in dein Heimnetz zu gelangen.
-- Dies schützt dein SIP-System vor unerlaubtem Zugriff.
+### 🔒 **Option 2: VPN (Recommended)**
+- Use a **VPN (e.g., WireGuard or Tailscale)** to securely connect to your home network.
+- This protects your SIP system from unauthorized access.
 
 ---
 
-## ✅ **6. Home Assistant Automatisierung mit Asterisk**
-Du kannst Anrufe nutzen, um dein Smart Home zu steuern.
+## ✅ **6. Automating Home Assistant with Asterisk**
+You can use calls to control your smart home.
 
-### Beispiel: **Licht per Anruf einschalten**
-1. Gehe zu **Einstellungen → Automatisierungen**.
-2. Erstelle eine neue Automatisierung mit folgendem YAML-Code:
+### Example: **Turn on Lights via Call**
+1. Go to **Settings → Automations**.
+2. Create a new automation with the following YAML code:
    ```yaml
-   alias: Licht per Anruf steuern
+   alias: Control Lights via Call
    trigger:
      - platform: event
        event_type: asterisk_call
@@ -104,7 +104,6 @@ Du kannst Anrufe nutzen, um dein Smart Home zu steuern.
    action:
      - service: light.toggle
        target:
-         entity_id: light.wohnzimmer
+         entity_id: light.living_room
    ```
-3. Wenn du **100 anrufst**, schaltet sich das Licht um.
-
+3. When you call **100**, the light toggles on or off.
